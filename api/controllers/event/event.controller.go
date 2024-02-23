@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strings"
 	"watcher/domain/event"
@@ -54,10 +55,18 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 			ctx.JSON(http.StatusBadRequest, gin.H{})
 			return
 		}
+		bytes, err := ioutil.ReadAll(ctx.Request.Body)
+		if err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{})
+			return
+		}
+
+		bodyStr := string(bytes)
 
 		fmt.Printf("event: %v", event)
 		fmt.Printf("body: %v", body)
-		err := eci.service.PushGithubEvent(ctx, &event)
+		fmt.Printf("body: %s", bodyStr)
+		err = eci.service.PushGithubEvent(ctx, &event)
 		if err != nil {
 			ctx.JSON(http.StatusUnprocessableEntity, gin.H{})
 			return
