@@ -1,8 +1,12 @@
 package eventService
 
 import (
+	"fmt"
 	"watcher/domain/event"
+	"watcher/entities/events/github"
 	"watcher/utils"
+
+	"github.com/gin-gonic/gin"
 )
 
 type eventServiceImplementation struct {
@@ -15,6 +19,8 @@ func NewEventServiceImplementation(config *utils.Config) event.Service {
 	}
 }
 
-func (osi *eventServiceImplementation) Push() int {
-	return 0
+func (osi *eventServiceImplementation) PushGithubEvent(ctx *gin.Context, event *github.PushEventRequest) error {
+	// push to kafka with proper payload
+	fmt.Println()
+	return nil
 }

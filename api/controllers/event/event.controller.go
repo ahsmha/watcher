@@ -2,6 +2,7 @@ package controller
 
 import (
 	"net/http"
+	"strings"
 	"watcher/domain/event"
 	"watcher/entities/events/github"
 	"watcher/utils"
@@ -24,88 +25,37 @@ func NewEventController(service event.Service) EventController {
 }
 
 func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
-
 	// check if webhook repo has push webhook active
-	if (isHookActive()) {
+	// if (isHookActive()) {
+	ua := strings.ToLower(ctx.Request.Header.Get("User-Agent"))
 
-	} 
-	// if not add it
-	
-	// get events
+	for _, val := range utils.HookSource {
+		if strings.Contains(val, ua) {
+			ua = val
+			break
+		}
+	}
 
-	var event interface{}
-	var eventType string
-
-	switch ctx.Request.Header.Get("User-Agent") {
-		case utils.
+	switch ua {
+	case "github":
+		event := github.PushEventRequest{
+			Source: "github",
+			Type:   ctx.Request.Header.Get("x-github-event"),
+		}
+		if err := ctx.ShouldBindJSON(&event); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{})
+			return
+		}
+		err := eci.service.PushGithubEvent(ctx, &event)
+		if err != nil {
+			ctx.JSON(http.StatusUnprocessableEntity, gin.H{})
+			return
+		}
+	case "gitlab":
 	default:
-		// log this event with no header
 	}
-
-	case utils.GITHUB_PUSH_EVENT:
-		event = github.PushEventRequest{}
-		break
-	case utils.GITLAB_PUSH_EVENT:
-		// gitlab
-	if err := ctx.ShouldBindJSON(&event); err != nil {
-		// add logging
-		ctx.JSON(http.StatusBadRequest, gin.H{})
-		return
-	}
-	xyz := eci.service.Push()
-	mr.listener.Handle(c, event)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"message": "event pushed to kafka successfully",
 	})
-}
-
-func isHookActive() bool {
-	return true
-}
-
-func (*service) initWatcher(?) ? {
-	token:= getAccessToken()
-	repos := GetAllUserRepos(token)
-	return InitialProcessing(repos)
-}
-
-func (*rdb) getAccessToken(?) ? {
-	// fetch from database
-	return token
-}
-
-func GetAllUserRepos(?) ? {
-	url := "https://api.github.com/repos/OWNER/REPO/hooks"
-	method := "POST"
-
-	payload := strings.NewReader("")
-
-	client := &http.Client{}
-	req, err := http.NewRequest(method, url, payload)
-
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	req.Header.Add("Accept", "application/vnd.github+json")
-	req.Header.Add("Authorization", "Bearer <YOUR-TOKEN>")
-	req.Header.Add("X-GitHub-Api-Version", "2022-11-28")
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-
-	res, err := client.Do(req)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	defer res.Body.Close()
-
-	body, err := ioutil.ReadAll(res.Body)
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(string(body))
-
-	return ?
 }

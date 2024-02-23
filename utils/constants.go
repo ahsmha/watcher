@@ -1,6 +1,6 @@
 package utils
 
-var HookSource = []string{"Github", "Gitlab"}
+var HookSource = []string{"github", "gitlab"}
 
 // github
 
