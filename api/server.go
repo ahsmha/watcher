@@ -27,5 +27,7 @@ func StartServer(services service.Services, config *utils.Config) {
 	fmt.Println("watcher running")
 	fmt.Println("watcher running")
 	fmt.Println("watcher running")
+	fmt.Println("watcher running")
+
 	r.Run(":8089")
 }
