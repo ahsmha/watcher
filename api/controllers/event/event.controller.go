@@ -41,7 +41,8 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 
 	fmt.Printf("ua: %v", ua)
 	switch ua {
-	case "github":
+	default:
+		fmt.Printf("in github")
 		event := github.PushEventRequest{
 			Source: "github",
 			Type:   ctx.Request.Header.Get("x-github-event"),
@@ -72,7 +73,6 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 			return
 		}
 	case "gitlab":
-	default:
 	}
 
 	ctx.JSON(http.StatusOK, gin.H{
