@@ -46,11 +46,11 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 			Type:   ctx.Request.Header.Get("x-github-event"),
 		}
 		var body interface{}
-		if err := ctx.ShouldBindJSON(&event); err != nil {
+		if err := ctx.BindJSON(&event); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{})
 			return
 		}
-		if err := ctx.ShouldBindJSON(&body); err != nil {
+		if err := ctx.BindJSON(&body); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{})
 			return
 		}
