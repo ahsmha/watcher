@@ -29,7 +29,6 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 	// check if webhook repo has push webhook active
 	// if (isHookActive()) {
 	ua := strings.ToLower(ctx.Request.Header.Get("User-Agent"))
-	fmt.Printf("%v", ua)
 
 	for _, val := range utils.HookSource {
 		if strings.Contains(ua, val) {
@@ -38,7 +37,6 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 		}
 	}
 
-	fmt.Printf("ua: %v", ua)
 	switch ua {
 	case "github":
 		event := github.PushEventRequest{
@@ -59,7 +57,5 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 	default:
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"message": "event pushed to kafka successfully",
-	})
+	fmt.Println("message: event pushed to kafka successfully")
 }
