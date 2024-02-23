@@ -74,7 +74,7 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 			ctx.JSON(http.StatusBadRequest, gin.H{})
 			return
 		}
-		err := eci.service.PushGithubEvent(ctx, &event)
+		err = eci.service.PushGithubEvent(ctx, &event)
 		if err != nil {
 			ctx.JSON(http.StatusUnprocessableEntity, gin.H{})
 			return
