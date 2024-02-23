@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"net/http"
 	"strings"
 	"watcher/domain/event"
@@ -28,6 +29,7 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 	// check if webhook repo has push webhook active
 	// if (isHookActive()) {
 	ua := strings.ToLower(ctx.Request.Header.Get("User-Agent"))
+	fmt.Printf("%v", ua)
 
 	for _, val := range utils.HookSource {
 		if strings.Contains(val, ua) {
@@ -36,6 +38,7 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 		}
 	}
 
+	fmt.Printf("ua: %v", ua)
 	switch ua {
 	case "github":
 		event := github.PushEventRequest{
@@ -46,6 +49,7 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 			ctx.JSON(http.StatusBadRequest, gin.H{})
 			return
 		}
+		fmt.Printf("event: %v", event)
 		err := eci.service.PushGithubEvent(ctx, &event)
 		if err != nil {
 			ctx.JSON(http.StatusUnprocessableEntity, gin.H{})

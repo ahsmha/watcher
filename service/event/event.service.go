@@ -21,6 +21,6 @@ func NewEventServiceImplementation(config *utils.Config) event.Service {
 
 func (osi *eventServiceImplementation) PushGithubEvent(ctx *gin.Context, event *github.PushEventRequest) error {
 	// push to kafka with proper payload
-	fmt.Println(event)
+	fmt.Printf("%v", event)
 	return nil
 }
