@@ -1,13 +1,11 @@
 package routers
 
 import (
-	"net/http"
+	ec "watcher/api/controllers/event"
 
 	"github.com/gin-gonic/gin"
 )
 
-func SetEventRoutes(r *gin.RouterGroup) {
-	r.GET("/", func(ctx *gin.Context) {
-		ctx.JSON(http.StatusOK, gin.H{})
-	})
+func SetEventRoutes(or *gin.RouterGroup, c ec.EventController) {
+	or.POST("/", c.HandleEvent)
 }

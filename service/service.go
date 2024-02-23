@@ -1,18 +1,17 @@
 package service
 
 import (
-	"watcher/domain/onboarding"
-	onboardingService "watcher/service/onboarding"
+	"watcher/domain/event"
+	eventService "watcher/service/event"
 )
 
 type Services struct {
-	Onboarding onboarding.Service
-	// Event      event.Service
+	Event event.Service
 }
 
 func InitServices() Services {
-	onboardingService := onboardingService.NewOnboardingServiceImplementation()
+	eventService := eventService.NewEventServiceImplementation()
 	return Services{
-		Onboarding: onboardingService,
+		Event: eventService,
 	}
 }

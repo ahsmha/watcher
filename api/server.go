@@ -3,7 +3,7 @@ package api
 import (
 	"fmt"
 	"net/http"
-	oc "watcher/api/controllers/onboarding"
+	ec "watcher/api/controllers/event"
 	"watcher/api/routers"
 	"watcher/service"
 
@@ -13,14 +13,10 @@ import (
 func StartServer(services service.Services) {
 	r := gin.Default()
 
-	onboardingController := oc.NewOnboardingController(services.Onboarding)
-	// eventController :=
-
-	onboardingRoutes := r.Group("/onboarding")
-	routers.SetOnboardingRoutes(onboardingRoutes, onboardingController)
+	eventController := ec.NewEventController(services.Event)
 
 	eventRoutes := r.Group("/event")
-	routers.SetEventRoutes(eventRoutes)
+	routers.SetEventRoutes(eventRoutes, eventController)
 
 	r.NoRoute(func(ctx *gin.Context) { ctx.JSON(http.StatusNotFound, gin.H{}) })
 
