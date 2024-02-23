@@ -7,6 +7,9 @@ import (
 
 func main() {
 	// logger := utils.NewLogger(config)
+	// check if webhook repo has push webhook active
+	// if not add it
+	// get events
 	services := service.InitServices( /*logger,*/ )
 	api.StartServer(services)
 }
