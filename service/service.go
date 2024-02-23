@@ -3,14 +3,15 @@ package service
 import (
 	"watcher/domain/event"
 	eventService "watcher/service/event"
+	"watcher/utils"
 )
 
 type Services struct {
 	Event event.Service
 }
 
-func InitServices() Services {
-	eventService := eventService.NewEventServiceImplementation()
+func InitServices(config *utils.Config) Services {
+	eventService := eventService.NewEventServiceImplementation(config)
 	return Services{
 		Event: eventService,
 	}

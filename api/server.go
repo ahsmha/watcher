@@ -6,11 +6,12 @@ import (
 	ec "watcher/api/controllers/event"
 	"watcher/api/routers"
 	"watcher/service"
+	"watcher/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
-func StartServer(services service.Services) {
+func StartServer(services service.Services, config *utils.Config) {
 	r := gin.Default()
 
 	eventController := ec.NewEventController(services.Event)

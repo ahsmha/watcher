@@ -6,6 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetEventRoutes(or *gin.RouterGroup, c ec.EventController) {
-	or.POST("/", c.HandleEvent)
+func SetEventRoutes(er *gin.RouterGroup, c ec.EventController) {
+	er.POST("/", c.HandleEvent)
 }

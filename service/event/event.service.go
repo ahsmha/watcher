@@ -1,14 +1,20 @@
 package eventService
 
-import "watcher/domain/event"
+import (
+	"watcher/domain/event"
+	"watcher/utils"
+)
 
 type eventServiceImplementation struct {
+	token string
 }
 
-func NewEventServiceImplementation() event.Service {
-	return &eventServiceImplementation{}
+func NewEventServiceImplementation(config *utils.Config) event.Service {
+	return &eventServiceImplementation{
+		token: config.Token,
+	}
 }
 
-func (osi *eventServiceImplementation) GetLineCount() int {
+func (osi *eventServiceImplementation) Push() int {
 	return 0
 }
