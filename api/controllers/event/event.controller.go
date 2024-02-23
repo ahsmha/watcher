@@ -57,11 +57,13 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 		bytes, err := ioutil.ReadAll(ctx.Request.Body)
 		bodyStr := string(bytes)
 		fmt.Printf("body: %s", bodyStr[0:10])
-		if err != nil {
-			ctx.JSON(http.StatusBadRequest, gin.H{})
-			return
-		}
+		// if err != nil {
+		// 	ctx.JSON(http.StatusBadRequest, gin.H{})
+		// 	return
+		// }
 		if err := ctx.BindJSON(&b); err != nil {
+
+			fmt.Printf("Body Unmarshalled %v", b)
 			ctx.JSON(http.StatusBadRequest, gin.H{})
 			return
 		}
