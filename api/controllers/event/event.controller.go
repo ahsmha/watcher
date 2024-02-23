@@ -32,7 +32,7 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 	fmt.Printf("%v", ua)
 
 	for _, val := range utils.HookSource {
-		if strings.Contains(val, ua) {
+		if strings.Contains(ua, val) {
 			ua = val
 			break
 		}
