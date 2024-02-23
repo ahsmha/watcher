@@ -43,6 +43,12 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 	switch ua {
 	default:
 		fmt.Printf("in github")
+		type Body struct {
+			Ref    string `json:"ref"`
+			Before string `json:"before"`
+			After  string `json:"after"`
+		}
+		var b Body
 		event := github.PushEventRequest{
 			Source: "github",
 			Type:   ctx.Request.Header.Get("x-github-event"),
@@ -50,12 +56,16 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 		var body interface{}
 		bytes, err := ioutil.ReadAll(ctx.Request.Body)
 		bodyStr := string(bytes)
-		fmt.Printf("body: %s", bodyStr)
+		fmt.Printf("body: %s", bodyStr[0:10])
 		if err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{})
 			return
 		}
-
+		if err := ctx.BindJSON(&b); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{})
+			return
+		}
+		fmt.Printf("Body Unmarshalled %v", b)
 		if err := ctx.BindJSON(&event); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{})
 			return
