@@ -23,5 +23,5 @@ func NewEventController(service event.Service) EventController {
 
 func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 	xyz := eci.service.GetLineCount()
-	fmt.Println(xyz)
+	fmt.Println(xyz, "hi")
 }
