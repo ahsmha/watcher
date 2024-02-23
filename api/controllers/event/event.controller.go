@@ -45,11 +45,18 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 			Source: "github",
 			Type:   ctx.Request.Header.Get("x-github-event"),
 		}
+		var body interface{}
 		if err := ctx.ShouldBindJSON(&event); err != nil {
 			ctx.JSON(http.StatusBadRequest, gin.H{})
 			return
 		}
+		if err := ctx.ShouldBindJSON(&body); err != nil {
+			ctx.JSON(http.StatusBadRequest, gin.H{})
+			return
+		}
+
 		fmt.Printf("event: %v", event)
+		fmt.Printf("body: %v", body)
 		err := eci.service.PushGithubEvent(ctx, &event)
 		if err != nil {
 			ctx.JSON(http.StatusUnprocessableEntity, gin.H{})
