@@ -45,9 +45,18 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 			Type:   ctx.Request.Header.Get("x-github-event"),
 		}
 		type Body struct {
-			Ref    string `json:"ref"`
-			Before string `json:"before"`
-			After  string `json:"after"`
+			Ref     string `json:"ref"`
+			Before  string `json:"before"`
+			After   string `json:"after"`
+			Commits []struct {
+				Id      string `json:"id"`
+				Message string `json:"message"`
+				Author  struct {
+					Name     string `json:"name"`
+					Email    string `json:"email"`
+					Username string `json:"username"`
+				} `json:"author"`
+			} `json:"commits"`
 		}
 		var body Body
 		if err := ctx.ShouldBindJSON(&body); err != nil {
