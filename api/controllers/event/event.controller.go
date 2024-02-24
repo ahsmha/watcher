@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 	"strings"
 	"watcher/domain/event"
@@ -15,17 +16,17 @@ type EventController interface {
 	HandleEvent(ctx *gin.Context)
 }
 
-type eventControllerImplementation struct {
+type Common struct {
 	service event.Service
 }
 
 func NewEventController(service event.Service) EventController {
-	return &eventControllerImplementation{
+	return &Common{
 		service: service,
 	}
 }
 
-func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
+func (com *Common) HandleEvent(ctx *gin.Context) {
 	// check if webhook repo has push webhook active
 	// if (isHookActive()) {
 	ua := strings.ToLower(ctx.Request.Header.Get("User-Agent"))
@@ -39,37 +40,19 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 
 	switch ua {
 	case "github":
-		fmt.Println("Inside github")
-		event := github.PushEventRequest{
-			Source: "github",
-			Type:   ctx.Request.Header.Get("x-github-event"),
-		}
-		type Body struct {
-			Ref     string `json:"ref"`
-			Before  string `json:"before"`
-			After   string `json:"after"`
-			Commits []struct {
-				Id      string `json:"id"`
-				Message string `json:"message"`
-				Author  struct {
-					Name     string `json:"name"`
-					Email    string `json:"email"`
-					Username string `json:"username"`
-				} `json:"author"`
-			} `json:"commits"`
-		}
-		var body Body
+		log.Printf("Github Hook Request")
+		var body github.GithubHookRequest
 		if err := ctx.ShouldBindJSON(&body); err != nil {
-			fmt.Printf("body: %v", body)
 			ctx.JSON(http.StatusBadRequest, gin.H{})
 			return
 		}
-		fmt.Printf("body: %v", body)
-		err := eci.service.PushGithubEvent(ctx, &event)
+		log.Printf("body: %v", body)
+		err := com.service.PushGithubEvent(ctx, &body)
 		if err != nil {
 			ctx.JSON(http.StatusUnprocessableEntity, gin.H{})
 			return
 		}
+		ctx.JSON(http.StatusOK, gin.H{"message": "hook published"})
 	case "gitlab":
 	default:
 	}

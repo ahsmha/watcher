@@ -7,5 +7,5 @@ import (
 )
 
 type Service interface {
-	PushGithubEvent(ctx *gin.Context, event *github.PushEventRequest) error
+	PushGithubEvent(ctx *gin.Context, event *github.GithubHookRequest) error
 }
