@@ -39,15 +39,23 @@ func (eci *eventControllerImplementation) HandleEvent(ctx *gin.Context) {
 
 	switch ua {
 	case "github":
+		fmt.Println("Inside github")
 		event := github.PushEventRequest{
 			Source: "github",
 			Type:   ctx.Request.Header.Get("x-github-event"),
 		}
-		if err := ctx.ShouldBindJSON(&event); err != nil {
+		type Body struct {
+			Ref    string `json:"ref"`
+			Before string `json:"before"`
+			After  string `json:"after"`
+		}
+		var body Body
+		if err := ctx.ShouldBindJSON(&body); err != nil {
+			fmt.Printf("body: %v", body)
 			ctx.JSON(http.StatusBadRequest, gin.H{})
 			return
 		}
-		fmt.Printf("event: %v", event)
+		fmt.Printf("body: %v", body)
 		err := eci.service.PushGithubEvent(ctx, &event)
 		if err != nil {
 			ctx.JSON(http.StatusUnprocessableEntity, gin.H{})
